@@ -1,0 +1,210 @@
+:root{--paper:#f6f5f1;--ink:#20211d;--line:#d7d6cf;--orange:#d36642;--mono:"DM Mono",monospace;--serif:Georgia,"Times New Roman",serif;--sans:"DM Sans",sans-serif}*{box-sizing:border-box}html{scroll-behavior:smooth;overflow-x:hidden}body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);overflow-x:hidden;width:100%}a{color:inherit;text-decoration:none}.page-head{height:96px;display:flex;align-items:center;padding:0 4.2%;border-bottom:1px solid var(--line);background:#fff}.brand{display:block;line-height:1}.page-brand-logo{display:block;width:145px;height:auto;max-height:39px;object-fit:contain}.page-brand-tagline{display:block;margin-top:4px;color:#565751;font:7px var(--mono);letter-spacing:.18em;text-align:center}.brand span{font-weight:400}.brand i{display:block;margin-top:9px;font:7px var(--mono);letter-spacing:.25em;color:#4f504b;font-style:normal}.page-nav{display:flex;gap:43px;margin-left:auto;margin-right:7.5%;font:12px var(--mono);letter-spacing:.18em;text-transform:uppercase}.page-nav a{padding:8px 0;border-bottom:1px solid transparent}.page-nav a:hover,.page-nav .active{border-color:var(--orange)}.mobile-toggle{display:none}.mobile-menu{display:none}.page-main{min-height:calc(100vh - 96px);padding:94px 8.2%}.kicker{font:10px var(--mono);letter-spacing:.13em;color:#77786f}.page-title{font:400 clamp(55px,8vw,115px)/.9 var(--serif);letter-spacing:-.07em;margin:25px 0 38px;max-width:900px}.page-title em{color:#85867c}.intro{font-size:18px;line-height:1.6;color:#5f6059;max-width:520px}.split{display:grid;grid-template-columns:1fr 1fr;gap:8vw;margin-top:68px;padding-top:28px;border-top:1px solid var(--line)}.split h2{font:400 35px var(--serif);letter-spacing:-.04em;margin:0}.split p{font-size:14px;line-height:1.85;color:#66675f;margin:0 0 20px}.projects-list{margin-top:70px;border-top:1px solid var(--line)}.project-row{display:grid;grid-template-columns:70px 1fr 150px 80px;align-items:center;gap:20px;border-bottom:1px solid var(--line);padding:19px 0}.project-row span{font:10px var(--mono);color:#77786f}.project-row h2{font:400 29px var(--serif);letter-spacing:-.04em;margin:0}.project-row:hover h2{color:var(--orange)}.contact-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:8vw;margin-top:70px;padding-top:25px;border-top:1px solid var(--line)}.contact-grid h2{font:400 32px var(--serif);margin:0 0 12px}.contact-grid p,.contact-grid a{font-size:14px;line-height:1.9;color:#65665e}.contact-grid a:hover{color:var(--orange)}.form{display:grid;gap:16px}.form label{display:grid;gap:8px;font:10px var(--mono);letter-spacing:.1em;color:#77786f}.form input,.form textarea{padding:13px 0;border:0;border-bottom:1px solid #aaa9a1;background:transparent;font:14px var(--sans);outline-color:var(--orange)}.form textarea{min-height:105px;resize:vertical}.form button{justify-self:start;border:0;background:#252620;color:white;padding:14px 23px;font:10px var(--mono);letter-spacing:.1em;cursor:pointer}.role-list{margin-top:60px;border-top:1px solid var(--line)}.role{display:grid;grid-template-columns:1fr 180px 40px;align-items:center;border-bottom:1px solid var(--line);padding:22px 0}.role h2{margin:0;font:400 29px var(--serif);letter-spacing:-.04em}.role span{font:10px var(--mono);letter-spacing:.08em;color:#77786f}.role b{font-size:19px;color:var(--orange);font-weight:400}.page-footer{border-top:1px solid var(--line);padding:22px 8.2%;display:flex;justify-content:space-between;font:9px var(--mono);letter-spacing:.09em;color:#77786f}@media(max-width:900px){.page-head{height:70px;padding:0 6%;position:relative;z-index:5}.page-brand-logo{width:112px;max-height:30px}.page-brand-tagline{margin-top:3px;font-size:6px}.page-nav{display:none}.mobile-toggle{display:grid;width:40px;height:40px;margin-left:auto;align-content:center;justify-content:center;gap:6px;padding:0;border:0;background:transparent;cursor:pointer}.mobile-toggle span{width:27px;height:1px;background:var(--ink)}.mobile-menu{display:block;position:fixed;z-index:20;inset:0;background:#23221e;color:#f7f5ef;visibility:hidden;pointer-events:none;transform:translateX(100%);transition:transform .3s,visibility .3s}.mobile-menu.open{visibility:visible;pointer-events:auto;transform:translateX(0)}.mobile-menu-inner{height:100%;padding:25px 7% 30px;display:flex;flex-direction:column}.mobile-menu-top{display:flex;align-items:flex-start;justify-content:space-between}.mobile-menu .brand i{color:#c1c0b8}.mobile-menu-close{border:0;background:none;color:#fff;font:34px/1 var(--serif);cursor:pointer}.mobile-menu nav{margin-top:58px;border-top:1px solid #ffffff29}.mobile-menu nav a{display:flex;justify-content:space-between;border-bottom:1px solid #ffffff29;padding:19px 0;font-size:24px;letter-spacing:-.04em}.mobile-menu nav a:after{content:"↗";font-size:17px;color:#c2c0b7}.mobile-menu nav a.active{color:#e2a17c}.page-main{min-height:calc(100vh - 70px);padding:67px 7%}.page-title{font-size:68px}.split,.contact-grid{grid-template-columns:1fr;gap:30px;margin-top:45px}.project-row{grid-template-columns:42px 1fr 50px}.project-row span:nth-child(3){display:none}.project-row h2{font-size:24px}.role{grid-template-columns:1fr 36px}.role span{display:none}.page-footer{padding:20px 7%}.page-footer span:last-child{display:none}}body.locked{overflow:hidden}
+.page-whatsapp-float{position:fixed;z-index:18;right:24px;bottom:24px;width:68px;height:68px;border-radius:50%;background:#25231f;color:#fff;display:grid;place-items:center;box-shadow:0 7px 20px #0003}.page-whatsapp-float svg{width:32px;height:32px}.page-menu-whatsapp{display:none}@media(max-width:900px){.page-menu-whatsapp{display:inline-flex;align-items:center;justify-content:center;gap:10px;margin-top:31px;width:225px;padding:15px 18px;border:1px solid #ffffff88;border-radius:100px;font:10px var(--mono);letter-spacing:.16em}.page-menu-whatsapp svg{width:19px;height:19px}.page-whatsapp-float{width:62px;height:62px;right:17px;bottom:17px}.page-whatsapp-float svg{width:29px;height:29px}}
+
+
+/* ── Val Atelier Inspired Footer ── */
+.val-footer {
+  background: #1b1916;
+  color: #f5f4ef;
+  padding: 84px 8.2% 34px;
+  border-top: 1px solid #2d2b26;
+  position: relative;
+  z-index: 5;
+}
+.val-footer-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 48px;
+  margin-bottom: 74px;
+}
+.val-footer-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.val-footer-logo-link {
+  display: block;
+  margin-bottom: 40px;
+}
+.val-footer-logo {
+  display: block;
+  width: 145px;
+  height: auto;
+  max-height: 39px;
+  object-fit: contain;
+}
+.val-footer-tagline {
+  display: block;
+  margin-top: 4px;
+  color: #a6a39a;
+  font: 7px var(--mono);
+  letter-spacing: .18em;
+  text-align: center;
+}
+
+/* Instagram pill card */
+.val-insta-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  padding: 15px 22px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.02);
+  color: #f5f4ef;
+  transition: all .2s ease;
+  min-width: 250px;
+}
+.val-insta-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+.val-insta-icon {
+  display: grid;
+  place-items: center;
+  color: #f5f4ef;
+  flex-shrink: 0;
+}
+.val-insta-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.val-insta-info strong {
+  font: 400 18px var(--serif);
+  letter-spacing: -.01em;
+  color: #fff;
+}
+.val-insta-info span {
+  font: 8px var(--mono);
+  letter-spacing: .14em;
+  color: #9c9990;
+  text-transform: uppercase;
+}
+.val-insta-arrow {
+  margin-left: auto;
+  font-size: 16px;
+  color: #a6a39a;
+  transition: transform .2s ease;
+}
+.val-insta-card:hover .val-insta-arrow {
+  transform: translateX(4px);
+  color: #fff;
+}
+
+/* Right contact block */
+.val-footer-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  text-align: left;
+}
+.val-footer-kicker {
+  font: 9px var(--mono);
+  letter-spacing: .2em;
+  color: #968a7a;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+.val-footer-link {
+  font: 400 16px var(--serif);
+  letter-spacing: -.01em;
+  color: #f0eee7;
+  transition: color .2s ease;
+}
+.val-footer-link:hover {
+  color: var(--orange);
+}
+.val-footer-address {
+  font: 14px var(--font);
+  color: #9d9990;
+  line-height: 1.6;
+}
+
+/* Bottom Bar */
+.val-footer-bottom {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font: 9px var(--mono);
+  letter-spacing: .08em;
+  color: #7a776e;
+  text-transform: uppercase;
+}
+.val-footer-copy {
+  color: #7a776e;
+  line-height: 1.6;
+}
+
+/* Responsive Footer */
+@media (max-width: 800px) {
+  .val-footer {
+    padding: 50px 6% 28px;
+  }
+  .val-footer-top {
+    flex-direction: column;
+    gap: 36px;
+    margin-bottom: 40px;
+  }
+  .val-insta-card {
+    width: 100%;
+    max-width: 320px;
+  }
+}
+@media (max-width: 600px) {
+  .val-footer {
+    padding: 44px 5% 24px;
+  }
+  .val-footer-logo-link {
+    margin-bottom: 28px;
+  }
+  .val-footer-logo {
+    width: 125px;
+    max-height: 34px;
+  }
+  .val-footer-copy {
+    font-size: 8px;
+    letter-spacing: .06em;
+  }
+}
+
+/* Floating WhatsApp Button */
+.whatsapp-float {
+  position: fixed;
+  z-index: 99;
+  right: 22px;
+  bottom: 22px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #25231f;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 7px 20px rgba(0, 0, 0, 0.2);
+  transition: transform .2s ease;
+}
+.whatsapp-float:hover {
+  transform: scale(1.08);
+}
+.whatsapp-float svg {
+  width: 25px;
+  height: 25px;
+}
+@media (max-width: 600px) {
+  .whatsapp-float {
+    width: 48px;
+    height: 48px;
+    right: 16px;
+    bottom: 16px;
+  }
+  .whatsapp-float svg {
+    width: 23px;
+    height: 23px;
+  }
+}
+

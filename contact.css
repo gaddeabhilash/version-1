@@ -1,0 +1,291 @@
+/* ── BHAHAUS Minimalist Contact Page (No Form — Direct Connect) ── */
+.contact-main {
+  min-height: calc(100vh - 96px);
+  background: var(--paper);
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-hero {
+  flex: 1;
+  padding: 90px 8.2% 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+}
+
+.contact-kicker-banner {
+  font: 500 clamp(13px, 1.35vw, 17px)/1.5 var(--sans);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: #1f1f1d;
+  max-width: 860px;
+  margin: 0 auto 16px;
+}
+
+.contact-title-group {
+  display: inline-flex;
+  align-items: flex-start;
+  justify-content: center;
+  position: relative;
+  margin: 0 auto 38px;
+}
+
+.contact-hero-title {
+  font: 400 clamp(36px, 4.8vw, 64px)/1.1 var(--sans);
+  letter-spacing: -0.03em;
+  color: #1b1916;
+  margin: 0;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.contact-hero-title .slash {
+  color: #9a7b4f;
+  font-weight: 300;
+  font-style: normal;
+}
+
+/* Moving Swinging Curved Arrow (Direct from bhahaus.com/blank-3) */
+.contact-arrow-wrap {
+  position: absolute;
+  left: calc(100% + 18px);
+  top: -4px;
+  width: 95px;
+  height: 95px;
+  pointer-events: none;
+}
+
+.contact-arrow-svg {
+  width: 90px;
+  height: 90px;
+  color: #1b1916;
+  transform-origin: 35% 25%;
+  animation: bhahaus-arrow-swing 3.5s cubic-bezier(0.445, 0.05, 0.55, 0.95) infinite;
+  display: block;
+}
+
+@keyframes bhahaus-arrow-swing {
+  0% {
+    transform: rotate(0deg) translate(0, 0);
+  }
+  25% {
+    transform: rotate(24deg) translate(5px, 6px);
+  }
+  75% {
+    transform: rotate(-18deg) translate(-4px, -3px);
+  }
+  100% {
+    transform: rotate(0deg) translate(0, 0);
+  }
+}
+
+@media (max-width: 850px) {
+  .contact-title-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+  .contact-arrow-wrap {
+    position: static;
+    margin-top: 8px;
+    width: 75px;
+    height: 75px;
+  }
+  .contact-arrow-svg {
+    width: 75px;
+    height: 75px;
+  }
+}
+
+/* Direct Channels Grid */
+.contact-channels-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  width: 100%;
+  max-width: 1080px;
+  margin: 10px auto 48px;
+  text-align: left;
+}
+
+.channel-card {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 4px;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-decoration: none;
+  color: inherit;
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+  position: relative;
+}
+
+.channel-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+  border-color: #9a7b4f;
+}
+
+.channel-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #f4f2ec;
+  display: grid;
+  place-items: center;
+  color: #23201c;
+  margin-bottom: 22px;
+  transition: background .2s ease, color .2s ease;
+}
+
+.channel-card:hover .channel-icon {
+  background: #23201c;
+  color: #ffffff;
+}
+
+.channel-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.channel-kicker {
+  font: 9px var(--mono);
+  letter-spacing: .16em;
+  color: #88867c;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.channel-val {
+  font: 500 clamp(15px, 1.25vw, 17px)/1.35 var(--sans);
+  color: #1b1916;
+  margin-bottom: 8px;
+  word-break: break-word;
+}
+
+.channel-hint {
+  font: 12px/1.55 var(--sans);
+  color: #77756e;
+  margin: 0;
+}
+
+.channel-arrow {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  font-size: 15px;
+  color: #aaa79e;
+  transition: transform .2s ease, color .2s ease;
+}
+
+.channel-card:hover .channel-arrow {
+  transform: translate(3px, -3px);
+  color: #9a7b4f;
+}
+
+/* 4-Icon Connect Bar directly reflecting the screenshot */
+.connect-dock-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1080px;
+  margin: 20px auto 0;
+  padding-top: 32px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.connect-dock-copy {
+  font: 12px var(--sans);
+  color: #77756e;
+}
+
+.connect-icons-group {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.connect-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: #ffffff;
+  color: #22201b;
+  transition: all .2s ease;
+  cursor: pointer;
+}
+
+.connect-icon-btn:hover {
+  background: #23201c;
+  border-color: #23201c;
+  color: #ffffff;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.connect-icon-btn svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+
+@media (max-width: 992px) {
+  .contact-channels-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .contact-arrow-svg {
+    right: 8%;
+  }
+}
+
+@media (max-width: 600px) {
+  .contact-hero {
+    padding: 60px 6% 45px;
+  }
+  .contact-channels-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-bottom: 30px;
+  }
+  .contact-arrow-wrapper {
+    height: 55px;
+    margin: 4px auto 16px;
+  }
+  .contact-arrow-svg {
+    right: 4%;
+    width: 85px;
+    height: 55px;
+  }
+  .connect-dock-bar {
+    flex-direction: column-reverse;
+    gap: 24px;
+    text-align: center;
+    padding-top: 24px;
+  }
+  .connect-icons-group {
+    gap: 16px;
+  }
+  .connect-icon-btn {
+    width: 44px;
+    height: 44px;
+  }
+  .connect-icon-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
