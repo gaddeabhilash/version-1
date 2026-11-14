@@ -212,11 +212,13 @@
     }
   }
 
-  // Parse tab from URL (?tab=finished or ?tab=ongoing)
+  // Parse tab from URL (?tab=finished, ?tab=ongoing, or ?tab=conceptual)
   function getTabFromUrl() {
     const params = new URLSearchParams(window.location.search);
     const tab = (params.get("tab") || "finished").toLowerCase();
-    return tab === "ongoing" ? "ongoing" : "finished";
+    if (tab === "ongoing") return "ongoing";
+    if (tab === "conceptual") return "conceptual";
+    return "finished";
   }
 
   function setTabInUrl(tab) {
@@ -243,19 +245,40 @@
 
     const tabFinishedCount = document.getElementById("tab-finished-count");
     const tabOngoingCount = document.getElementById("tab-ongoing-count");
+    const tabConceptualCount = document.getElementById("tab-conceptual-count");
 
     function updateCounts() {
-      const finishedProjects = allProjects.filter((p) => (p.status || "finished") === "finished");
-      const ongoingProjects = allProjects.filter((p) => p.status === "ongoing");
+      const finishedProjects = allProjects.filter((p) => {
+        const s = (p.status || "finished").toLowerCase();
+        const c = (p.category || "").toLowerCase();
+        return s === "finished" && c !== "conceptual";
+      });
+      const ongoingProjects = allProjects.filter((p) => (p.status || "").toLowerCase() === "ongoing");
+      const conceptualProjects = allProjects.filter((p) => {
+        const s = (p.status || "").toLowerCase();
+        const c = (p.category || "").toLowerCase();
+        return s === "conceptual" || c === "conceptual";
+      });
       if (tabFinishedCount) tabFinishedCount.textContent = String(finishedProjects.length).padStart(2, "0");
       if (tabOngoingCount) tabOngoingCount.textContent = String(ongoingProjects.length).padStart(2, "0");
+      if (tabConceptualCount) tabConceptualCount.textContent = String(conceptualProjects.length).padStart(2, "0");
     }
 
     updateCounts();
 
     function render() {
       // 1. Filter by active tab
-      const tabList = allProjects.filter((p) => (p.status || "finished") === activeTab);
+      const tabList = allProjects.filter((p) => {
+        const s = (p.status || "finished").toLowerCase();
+        const c = (p.category || "").toLowerCase();
+        if (activeTab === "conceptual") {
+          return s === "conceptual" || c === "conceptual";
+        }
+        if (activeTab === "ongoing") {
+          return s === "ongoing";
+        }
+        return s === "finished" && c !== "conceptual";
+      });
 
       // 2. Filter by category
       const filtered = tabList.filter((p) => {
@@ -265,10 +288,12 @@
       });
 
       if (!filtered.length) {
-        const emptyMsg =
-          activeTab === "ongoing"
-            ? "No ongoing projects on the boards right now. Check back soon."
-            : "No finished projects found for the selected category.";
+        let emptyMsg = "No finished projects found for the selected category.";
+        if (activeTab === "ongoing") {
+          emptyMsg = "No ongoing projects on the boards right now. Check back soon.";
+        } else if (activeTab === "conceptual") {
+          emptyMsg = "No conceptual projects published yet. Check back soon.";
+        }
         container.innerHTML = `<div class="projects-empty">${emptyMsg}</div>`;
         return;
       }

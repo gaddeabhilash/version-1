@@ -23,6 +23,7 @@ export default defineType({
           { title: 'Interiors', value: 'Interiors' },
           { title: 'Hospitality', value: 'Hospitality' },
           { title: 'Commercial', value: 'Commercial' },
+          { title: 'Conceptual', value: 'Conceptual' },
         ],
       },
       validation: (Rule) => Rule.required().error('Project category is required.'),
@@ -49,6 +50,7 @@ export default defineType({
         list: [
           { title: 'Selected Work / Finished', value: 'finished' },
           { title: 'Ongoing Work', value: 'ongoing' },
+          { title: 'Conceptual Work', value: 'conceptual' },
         ],
         layout: 'radio',
       },
