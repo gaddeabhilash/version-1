@@ -130,23 +130,51 @@ const demoProjects = [
 ];
 let projects = [...demoProjects];
 let activeFilter = "All";
-let supabase = null;
 const $ = (selector, root=document) => root.querySelector(selector);
 const $$ = (selector, root=document) => [...root.querySelectorAll(selector)];
-const escapeHTML = (value="") => String(value).replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));
-const safeImage = (value="") => { try { const u=new URL(value, location.href); return ["http:","https:","data:"].includes(u.protocol) ? u.href : ""; } catch { return ""; } };
+const escapeHTML = (value="") => (value == null ? "" : String(value)).replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));
+const safeImage = (value="") => {
+  if (!value) return "";
+  if (typeof value === "string" && (value.startsWith("/") || value.startsWith("http://") || value.startsWith("https://") || value.startsWith("data:"))) {
+    return value;
+  }
+  return "";
+};
 const niceCount = n => String(n).padStart(2,"0");
-function visibleProjects(){return projects.filter(p=>activeFilter==="All"||p.category===activeFilter).sort((a,b)=>Number(a.sort_order||0)-Number(b.sort_order||0));}
+
+function getHeroImageSrc(raw) {
+  const clean = safeImage(raw);
+  if (!clean) return "";
+  if (window.BhahausSanity && typeof window.BhahausSanity.getHeroImageUrl === "function") {
+    return window.BhahausSanity.getHeroImageUrl(clean);
+  }
+  return clean;
+}
+
+function getCardImageSrc(raw) {
+  const clean = safeImage(raw);
+  if (!clean) return "";
+  if (window.BhahausSanity && typeof window.BhahausSanity.getCardImageUrl === "function") {
+    return window.BhahausSanity.getCardImageUrl(clean);
+  }
+  return clean;
+}
+
+function visibleProjects(){
+  return projects.filter(p=>activeFilter==="All"||p.category===activeFilter).sort((a,b)=>Number(a.sort_order||0)-Number(b.sort_order||0));
+}
+
 function renderOurProjects(){
   const container = $("#our-projects-grid");
   if(!container) return;
-  // Pick exactly 3 projects (prefer featured or first 3)
-  const three = projects.slice(0, 3);
+  // Strictly filter for isFeatured == true (limit to max 3), fallback to first 3 if none marked
+  const featuredOnly = projects.filter(p => p.featured || p.isFeatured);
+  const three = (featuredOnly.length > 0 ? featuredOnly : projects).slice(0, 3);
   container.innerHTML = three.map(p => `
     <article class="op-card" tabindex="0" data-project="${escapeHTML(p.id)}" aria-label="View ${escapeHTML(p.title)}">
       <div class="op-card-img-wrap">
-        <img class="op-card-img" src="${escapeHTML(safeImage(p.image||p.cover))}" alt="${escapeHTML(p.title)}" loading="lazy" />
-        ${p.featured ? `<span class="op-card-badge">● FEATURED</span>` : ""}
+        <img class="op-card-img" src="${escapeHTML(getCardImageSrc(p.image||p.cover))}" alt="${escapeHTML(p.title)}" loading="lazy" decoding="async" />
+        <span class="op-card-badge">● FEATURED</span>
       </div>
       <div class="op-card-info">
         <h3>${escapeHTML(p.title)}</h3>
@@ -155,65 +183,98 @@ function renderOurProjects(){
     </article>
   `).join("");
 }
+
 function renderProjects(){
   const grid = $("#project-grid");
   if (!grid) return;
   const list=visibleProjects();
   const countEl = $("#project-count");
   if (countEl) countEl.textContent=niceCount(projects.length);
-  grid.innerHTML=list.length?list.map((p,i)=>`<article class="project-card" tabindex="0" data-project="${escapeHTML(p.id)}" aria-label="View ${escapeHTML(p.title)}"><div class="project-image"><img src="${escapeHTML(safeImage(p.image||p.cover))}" alt="${escapeHTML(p.title)}" loading="lazy" /><span class="image-number">${niceCount(i+1)} — ${escapeHTML((p.category||"PROJECT").toUpperCase())}</span><span class="image-arrow">↗</span></div><div class="project-info"><h3>${escapeHTML(p.title)}</h3><span>${escapeHTML(p.year)}</span></div><div class="project-meta"><span>${escapeHTML(p.location||"")}</span><span>${p.featured?"SELECTED PROJECT":""}</span></div></article>`).join(""):`<div class="empty">No projects in this collection yet. Check back soon.</div>`;
+  grid.innerHTML=list.length?list.map((p,i)=>`
+    <article class="project-card" tabindex="0" data-project="${escapeHTML(p.id)}" aria-label="View ${escapeHTML(p.title)}">
+      <div class="project-image">
+        <img src="${escapeHTML(getCardImageSrc(p.image||p.cover))}" alt="${escapeHTML(p.title)}" loading="lazy" decoding="async" />
+        <span class="image-number">${niceCount(i+1)} — ${escapeHTML((p.category||"PROJECT").toUpperCase())}</span>
+        <span class="image-arrow">↗</span>
+      </div>
+      <div class="project-info">
+        <h3>${escapeHTML(p.title)}</h3>
+        <span>${escapeHTML(p.year)}</span>
+      </div>
+      <div class="project-meta">
+        <span>${escapeHTML(p.location||"")}</span>
+        <span>${(p.featured||p.isFeatured)?"SELECTED PROJECT":""}</span>
+      </div>
+    </article>
+  `).join(""):`<div class="empty">No projects in this collection yet. Check back soon.</div>`;
 }
-function openProject(id){const p=projects.find(x=>x.id===id);if(!p)return;$("#project-detail-content").innerHTML=`<img class="detail-image" src="${escapeHTML(safeImage(p.image||p.cover))}" alt="${escapeHTML(p.title)}"/><div class="detail-body"><span class="eyebrow">${escapeHTML((p.category||"PROJECT").toUpperCase())}　·　${escapeHTML(p.year)}${p.location?"　·　"+escapeHTML(p.location.toUpperCase()):""}</span><h2>${escapeHTML(p.title)}</h2><p>${escapeHTML(p.description)}</p>${p.gallery?.length?`<div class="detail-gallery">${p.gallery.map(img=>`<img src="${escapeHTML(safeImage(img))}" alt="${escapeHTML(p.title)} — project photograph" loading="lazy"/>`).join("")}</div>`:""}</div>`;toggleOverlay("#project-modal",true);}
-function toggleOverlay(id,open){$(id).classList.toggle("open",open);$(id).setAttribute("aria-hidden",String(!open));document.body.classList.toggle("locked",open||$("#project-modal").classList.contains("open"));}
-function toast(message){const el=document.createElement("div");el.className="toast";el.textContent=message;document.body.append(el);setTimeout(()=>el.remove(),2600);}
+
+function openProject(id){
+  const p=projects.find(x=>x.id===id);
+  if(!p)return;
+  const modalCover = getCardImageSrc(p.image||p.cover);
+  $("#project-detail-content").innerHTML=`
+    ${modalCover ? `<img class="detail-image" src="${escapeHTML(modalCover)}" alt="${escapeHTML(p.title)}"/>` : ""}
+    <div class="detail-body">
+      <span class="eyebrow">${escapeHTML((p.category||"PROJECT").toUpperCase())}${p.year ? "　·　" + escapeHTML(p.year) : ""}${p.location ? "　·　" + escapeHTML(p.location.toUpperCase()) : ""}</span>
+      <h2>${escapeHTML(p.title)}</h2>
+      ${p.description ? `<p>${escapeHTML(p.description)}</p>` : ""}
+      ${p.gallery?.length ? `<div class="detail-gallery">${p.gallery.map(img=>`<img src="${escapeHTML(getCardImageSrc(img))}" alt="${escapeHTML(p.title)} — photograph" loading="lazy" decoding="async"/>`).join("")}</div>` : ""}
+    </div>
+  `;
+  toggleOverlay("#project-modal",true);
+}
+
+function toggleOverlay(id,open){
+  $(id).classList.toggle("open",open);
+  $(id).setAttribute("aria-hidden",String(!open));
+  document.body.classList.toggle("locked",open||$("#project-modal").classList.contains("open"));
+}
+
+function toast(message){
+  const el=document.createElement("div");
+  el.className="toast";
+  el.textContent=message;
+  document.body.append(el);
+  setTimeout(()=>el.remove(),2600);
+}
+
 document.addEventListener("DOMContentLoaded",async()=>{
   const siteMenu=$("#site-menu");
   const menuToggle=$("#menu-toggle");
-  const setMenu=(open)=>{siteMenu.classList.toggle("open",open);siteMenu.setAttribute("aria-hidden",String(!open));menuToggle.setAttribute("aria-expanded",String(open));document.body.classList.toggle("locked",open||$("#project-modal").classList.contains("open"));};
+  const setMenu=(open)=>{
+    siteMenu.classList.toggle("open",open);
+    siteMenu.setAttribute("aria-hidden",String(!open));
+    menuToggle.setAttribute("aria-expanded",String(open));
+    document.body.classList.toggle("locked",open||$("#project-modal").classList.contains("open"));
+  };
   menuToggle.addEventListener("click",()=>setMenu(!siteMenu.classList.contains("open")));
   $$('[data-menu-close]').forEach(item=>item.addEventListener("click",()=>setMenu(false)));
-
-  // Merge admin-managed projects from localStorage without duplicating
-  try {
-    const stored = JSON.parse(localStorage.getItem("bhahaus_projects") || "[]");
-    if (Array.isArray(stored) && stored.length) {
-      const map = new Map();
-      demoProjects.forEach(p => map.set(p.id, { ...p }));
-      stored.forEach((p, i) => {
-        const existing = map.get(p.id);
-        map.set(p.id, {
-          id: p.id,
-          title: p.title || (existing && existing.title) || "",
-          category: p.category || (existing && existing.category) || "Residential",
-          location: p.location || (existing && existing.location) || "Hyderabad, Telangana",
-          year: String(p.year || (existing && existing.year) || ""),
-          description: p.description || (existing && existing.description) || "",
-          image: p.cover || p.image || (existing && (existing.image || existing.cover)) || "",
-          gallery: p.gallery || (existing && existing.gallery) || [],
-          featured: p.featured !== undefined ? Boolean(p.featured) : (existing ? existing.featured : false),
-          sort_order: existing ? existing.sort_order : (100 + i)
-        });
-      });
-      projects = Array.from(map.values()).sort((a, b) => Number(a.sort_order || 0) - Number(b.sort_order || 0));
-    }
-  } catch (err) {
-    console.warn("Could not parse stored projects", err);
-  }
 
   let heroIndex=0;
   const renderHero=()=>{
     const p=projects[heroIndex];
     if(!p)return;
-    const imgSrc = safeImage(p.image || p.cover);
-    $("#hero-photo").style.setProperty("background-image",`linear-gradient(0deg, rgba(21,23,12,.62), rgba(21,23,12,.05) 62%), url(\"${imgSrc}\")`,`important`);
+    const imgSrc = getHeroImageSrc(p.image || p.cover);
+    const bg = imgSrc
+      ? `linear-gradient(0deg, rgba(21,23,12,.62), rgba(21,23,12,.05) 62%), url("${imgSrc}")`
+      : `linear-gradient(0deg, rgba(21,23,12,.62), rgba(21,23,12,.05) 62%), #23221e`;
+    $("#hero-photo").style.setProperty("background-image", bg, "important");
     $("#hero-photo").setAttribute("aria-label",`${p.title}, ${p.category||""}, ${p.location||""}`);
     $("#hero-number").textContent=`${niceCount(heroIndex+1)} — ${niceCount(projects.length)}`;
     $("#hero-title").textContent=p.title;
     $("#hero-meta").textContent=`${(p.category||"PROJECT").toUpperCase()} · ${p.year}`;
   };
+
   $("#hero-prev").addEventListener("click",()=>{heroIndex=(heroIndex-1+projects.length)%projects.length;renderHero();});
   $("#hero-next").addEventListener("click",()=>{heroIndex=(heroIndex+1)%projects.length;renderHero();});
-  $$(".filter").forEach(button=>button.addEventListener("click",()=>{$$(".filter").forEach(b=>b.classList.remove("active"));button.classList.add("active");activeFilter=button.dataset.filter;renderProjects();}));
+  $$(".filter").forEach(button=>button.addEventListener("click",()=>{
+    $$(".filter").forEach(b=>b.classList.remove("active"));
+    button.classList.add("active");
+    activeFilter=button.dataset.filter;
+    renderProjects();
+  }));
+
   const pGrid = $("#project-grid");
   if (pGrid) {
     pGrid.addEventListener("click",event=>{const card=event.target.closest("[data-project]");if(card)openProject(card.dataset.project);});
@@ -221,14 +282,18 @@ document.addEventListener("DOMContentLoaded",async()=>{
   }
   $$('[data-close]').forEach(button=>button.addEventListener("click",()=>toggleOverlay("#project-modal",false)));
   document.addEventListener("keydown",event=>{if(event.key==="Escape"){setMenu(false);toggleOverlay("#project-modal",false);}});
+
+  // Initial immediate render (instant above-the-fold display)
   renderProjects();
   renderOurProjects();
   renderHero();
+
   const opGrid = $("#our-projects-grid");
   if(opGrid){
     opGrid.addEventListener("click",event=>{const card=event.target.closest("[data-project]");if(card)openProject(card.dataset.project);});
     opGrid.addEventListener("keydown",event=>{const card=event.target.closest("[data-project]");if(card&&(event.key==="Enter"||event.key===" ")){event.preventDefault();openProject(card.dataset.project);}});
   }
+
   const whatsAppButton=$(".whatsapp-float");
   const hero=$(".hero");
   const updateWhatsAppVisibility=()=>{
@@ -239,6 +304,21 @@ document.addEventListener("DOMContentLoaded",async()=>{
   window.addEventListener("scroll",updateWhatsAppVisibility,{passive:true});
   window.addEventListener("resize",updateWhatsAppVisibility);
   updateWhatsAppVisibility();
-  const config=window.BHAHAUS_CONFIG||{};
-  if(config.supabaseUrl&&config.supabaseAnonKey){try{const{createClient}=await import("https://esm.sh/@supabase/supabase-js@2");supabase=createClient(config.supabaseUrl,config.supabaseAnonKey);const{data,error}=await supabase.from("projects").select("*").order("sort_order",{ascending:true}).order("created_at",{ascending:false});if(!error&&data){projects=data;renderProjects();renderHero();}}catch(error){console.error("Supabase could not be initialized:",error);}}
+
+  // ── Dynamic Sanity CMS Integration ──
+  // Fetch real-time projects from Sanity public HTTP API
+  if (window.BhahausSanity && typeof window.BhahausSanity.fetchProjects === "function") {
+    try {
+      const sanityProjects = await window.BhahausSanity.fetchProjects();
+      if (Array.isArray(sanityProjects) && sanityProjects.length > 0) {
+        projects = sanityProjects;
+        heroIndex = 0;
+        renderProjects();
+        renderOurProjects();
+        renderHero();
+      }
+    } catch (err) {
+      console.warn("Sanity fetch completed with fallback:", err);
+    }
+  }
 });

@@ -9,10 +9,10 @@
 window.STUDIO_CONFIG = {
   // Studio Contact Information
   email: "bhahauspractice@gmail.com",
-  phone: "+91 89776 37317",
-  phoneLink: "tel:+918977637317",
-  whatsappNumber: "+91 89776 37317",
-  whatsappUrl: "https://wa.me/918977637317",
+  phone: "+91 7989189473",
+  phoneLink: "tel:+917989189473",
+  whatsappNumber: "+91 7989189473",
+  whatsappUrl: "https://wa.me/917989189473",
   address: "Hyderabad, Telangana, India",
 
   // Instagram Profile

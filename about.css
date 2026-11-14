@@ -95,29 +95,42 @@
 .about-typologies-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px 32px;
+  column-gap: 48px;
+  row-gap: 0;
   margin-top: 48px;
-  padding-top: 40px;
+  padding-top: 20px;
   border-top: 1px solid var(--line);
 }
 .typology-item {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  font: 11px var(--mono);
-  letter-spacing: .08em;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 15px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  min-height: 52px;
+  box-sizing: border-box;
+  font: 10.5px/1.45 var(--mono);
+  letter-spacing: .06em;
   text-transform: uppercase;
   color: var(--ink);
+  transition: border-color 0.2s ease;
+}
+.typology-item:hover {
+  border-bottom-color: var(--orange);
 }
 .typology-item span.typology-name {
-  color: #3b3a35;
+  color: #2b2a26;
+  white-space: normal;
 }
 .typology-item span.typology-count {
   font-weight: 500;
+  font-size: 10px;
+  letter-spacing: .08em;
   color: #9a7b4f;
-  margin-left: 12px;
+  white-space: nowrap;
+  text-align: right;
+  flex-shrink: 0;
 }
 .about-accreditations {
   display: flex;
@@ -154,15 +167,20 @@
   color: var(--ink);
 }
 
-@media (max-width: 992px) {
+@media (max-width: 1180px) {
   .about-typologies-grid {
     grid-template-columns: repeat(2, 1fr);
+    column-gap: 40px;
   }
 }
-@media (max-width: 600px) {
+@media (max-width: 680px) {
   .about-typologies-grid {
     grid-template-columns: 1fr;
-    gap: 8px;
+    column-gap: 0;
+  }
+  .typology-item {
+    padding: 13px 0;
+    min-height: 46px;
   }
 }
 

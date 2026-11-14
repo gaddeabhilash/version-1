@@ -4,7 +4,7 @@
 
   const PROJECTS_KEY = "bhahaus_projects";
   const esc = (v = "") =>
-    String(v).replace(/[&<>"']/g, (c) => ({
+    (v == null ? "" : String(v)).replace(/[&<>"']/g, (c) => ({
       "&": "&amp;",
       "<": "&lt;",
       ">": "&gt;",
@@ -225,22 +225,33 @@
     window.history.replaceState({}, "", url);
   }
 
-  document.addEventListener("DOMContentLoaded", () => {
+  function getCardImage(src) {
+    if (!src) return "";
+    if (window.BhahausSanity && typeof window.BhahausSanity.getCardImageUrl === "function") {
+      return window.BhahausSanity.getCardImageUrl(src);
+    }
+    return src;
+  }
+
+  document.addEventListener("DOMContentLoaded", async () => {
     const container = document.getElementById("projects-container");
     if (!container) return;
 
     let activeTab = getTabFromUrl();
     let activeCategory = "All";
-    const allProjects = loadProjects();
-
-    // Update tab counts
-    const finishedProjects = allProjects.filter((p) => (p.status || "finished") === "finished");
-    const ongoingProjects = allProjects.filter((p) => p.status === "ongoing");
+    let allProjects = loadProjects();
 
     const tabFinishedCount = document.getElementById("tab-finished-count");
     const tabOngoingCount = document.getElementById("tab-ongoing-count");
-    if (tabFinishedCount) tabFinishedCount.textContent = String(finishedProjects.length).padStart(2, "0");
-    if (tabOngoingCount) tabOngoingCount.textContent = String(ongoingProjects.length).padStart(2, "0");
+
+    function updateCounts() {
+      const finishedProjects = allProjects.filter((p) => (p.status || "finished") === "finished");
+      const ongoingProjects = allProjects.filter((p) => p.status === "ongoing");
+      if (tabFinishedCount) tabFinishedCount.textContent = String(finishedProjects.length).padStart(2, "0");
+      if (tabOngoingCount) tabOngoingCount.textContent = String(ongoingProjects.length).padStart(2, "0");
+    }
+
+    updateCounts();
 
     function render() {
       // 1. Filter by active tab
@@ -266,18 +277,19 @@
       const sorted = [...filtered].sort((a, b) => {
         const yDiff = Number(b.year || 0) - Number(a.year || 0);
         if (yDiff !== 0) return yDiff;
-        return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+        return Number(a.sort_order || 100) - Number(b.sort_order || 100);
       });
 
       let html = `<div class="portfolio-grid">`;
       sorted.forEach((p) => {
-        const badgeText = p.badge || (p.featured ? "● FEATURED" : "");
+        const badgeText = p.badge || (p.featured || p.isFeatured ? "● FEATURED" : "");
         const metaText = `${p.category || "PROJECT"} | ${p.year || ""}`;
+        const imgSrc = getCardImage(p.cover || p.image);
 
         html += `
           <article class="project-card" data-project-id="${esc(p.id)}" tabindex="0" role="button" aria-label="View ${esc(p.title)}">
             <div class="project-card-image">
-              <img src="${esc(p.cover || p.image)}" alt="${esc(p.title)}" loading="lazy" />
+              <img src="${esc(imgSrc)}" alt="${esc(p.title)}" loading="lazy" decoding="async" />
               ${badgeText ? `<span class="project-card-badge">${esc(badgeText)}</span>` : ""}
             </div>
             <div class="project-card-body">
@@ -350,7 +362,7 @@
         galleryHTML = `<div class="lightbox-gallery">${p.gallery
           .map(
             (src) =>
-              `<img src="${esc(src)}" alt="${esc(p.title)} — project photograph" loading="lazy" />`
+              `<img src="${esc(getCardImage(src))}" alt="${esc(p.title)} — photograph" loading="lazy" decoding="async" />`
           )
           .join("")}</div>`;
       }
@@ -364,7 +376,7 @@
         .join("　·　");
 
       lbInner.innerHTML = `
-        <img class="lightbox-cover" src="${esc(p.cover || p.image)}" alt="${esc(p.title)}" />
+        <img class="lightbox-cover" src="${esc(getCardImage(p.cover || p.image))}" alt="${esc(p.title)}" />
         <div class="lightbox-body">
           <span class="lb-kicker">${esc(kickerMeta)}</span>
           <h2>${esc(p.title)}</h2>
@@ -403,5 +415,19 @@
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") closeLightbox();
     });
+
+    // ── Dynamic Sanity CMS Integration ──
+    if (window.BhahausSanity && typeof window.BhahausSanity.fetchProjects === "function") {
+      try {
+        const sanityProjects = await window.BhahausSanity.fetchProjects();
+        if (Array.isArray(sanityProjects) && sanityProjects.length > 0) {
+          allProjects = sanityProjects;
+          updateCounts();
+          render();
+        }
+      } catch (err) {
+        console.warn("Projects page Sanity fetch fallback:", err);
+      }
+    }
   });
 })();

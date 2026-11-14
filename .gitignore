@@ -1,3 +1,7 @@
 .vercel
 .env*
 node_modules
+studio/node_modules
+studio/.sanity
+studio/dist
+

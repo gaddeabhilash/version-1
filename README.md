@@ -1,25 +1,58 @@
-# BHAHAUS architecture portfolio
+# BHAHAUS — Architecture & Design Collective
 
-A lightweight, responsive portfolio site. The public site is a static site and deploys directly to Vercel. Project administration connects to Supabase for sign-in and persistent project records.
+A lightweight, responsive, editorial portfolio website for BHAHAUS. Deploys statically directly to Vercel (or any static host) and connects dynamically to Sanity CMS for headless project content management.
 
-## Publish to Vercel
+- **Live URL**: `https://bhahaus.vercel.app`
+- **Sanity Project ID**: `hry3ao4k`
+- **Sanity Dataset**: `production`
 
-1. Put this folder in a Git repository and import it in Vercel. Select **Other** as the framework preset; there is no build command and the site output is this folder.
-2. Create a Supabase project. In **SQL Editor**, run [`supabase/schema.sql`](supabase/schema.sql).
-3. Create an account in **Authentication → Users** using the email and password you want for the admin. Copy its user UUID.
-4. Run this query in the SQL Editor, replacing the value with the UUID:
+---
 
-   ```sql
-   insert into public.studio_admins (user_id) values ('YOUR-USER-UUID');
-   ```
+## 1. Sanity CMS Setup
 
-5. Copy the project URL and anon/publishable key from Supabase **Project Settings → API**, then set `supabaseUrl` and `supabaseAnonKey` in [`config.js`](config.js). These browser keys are public; row-level security in the SQL file controls admin writes. Turn off public signups in Supabase Authentication settings.
-6. Redeploy Vercel. Open the site, click the small ✳ in the footer and sign in. The admin panel can add, edit, and delete projects. Changes go to Supabase and appear on the public site.
+Project content is managed headlessly via Sanity CMS.
 
-## Local preview
+### Local Studio:
+```bash
+cd studio
+npm install
+npm run dev
+```
+Open `http://localhost:3333` to add, edit, or publish projects.
 
-Serve the folder with any static HTTP server, such as `npx serve .`. The portfolio and project detail views work without Supabase; sign-in and project management become available when `config.js` is configured. In the footer, ✳ opens the admin panel.
+### Deploy Studio to the Web:
+```bash
+cd studio
+npx sanity deploy
+```
+Choose a hostname (e.g., `bhahaus`). Your studio will be live globally at `https://bhahaus.sanity.studio`.
 
-## Content
+---
 
-The initial portfolio projects are illustrative sample entries. Replace their descriptions and photographs with studio-approved project content. Project cover and gallery photographs accept image URLs; use image URLs that are publicly accessible.
+## 2. CORS Origins (Sanity Dashboard)
+
+Ensure the following are added in [manage.sanity.io](https://manage.sanity.io) → Project **hry3ao4k** → **API** → **CORS Origins**:
+- `https://vercel.app` (and `https://bhahaus.vercel.app`)
+- `http://localhost:3000`
+- `http://localhost:5500`
+
+---
+
+## 3. Project Schema Fields
+
+- **Title**: Project name (string, required)
+- **Category**: `Residential`, `Interiors`, `Hospitality`, `Commercial` (required)
+- **Year**: Year of completion / delivery (string, required)
+- **Location**: e.g., *Hyderabad, Telangana*
+- **Status**: *Selected Work / Finished* or *Ongoing Work*
+- **Main Image**: Primary image with hotspot (serves Hero slider & card thumbnails via Sanity CDN)
+- **Gallery Images**: Optional array of photographs for project details
+- **Description**: Editorial paragraph describing design intent
+- **Is Featured**: Maximum 3 projects appear in the 3-column *Selected Works* section on the homepage
+- **Sort Order**: Numeric order (1, 2, 3...)
+
+---
+
+## 4. Deployment
+
+Deploy the root directory directly to Vercel. Static files (`index.html`, `about.html`, `projects.html`, `contact.html`) run with zero build step, and `vercel.json` provides clean URLs. Dynamic project data is fetched client-side directly from Sanity's global CDN API.

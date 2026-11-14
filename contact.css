@@ -50,56 +50,12 @@
   font-style: normal;
 }
 
-/* Moving Swinging Curved Arrow (Direct from bhahaus.com/blank-3) */
-.contact-arrow-wrap {
-  position: absolute;
-  left: calc(100% + 18px);
-  top: -4px;
-  width: 95px;
-  height: 95px;
-  pointer-events: none;
-}
-
-.contact-arrow-svg {
-  width: 90px;
-  height: 90px;
-  color: #1b1916;
-  transform-origin: 35% 25%;
-  animation: bhahaus-arrow-swing 3.5s cubic-bezier(0.445, 0.05, 0.55, 0.95) infinite;
-  display: block;
-}
-
-@keyframes bhahaus-arrow-swing {
-  0% {
-    transform: rotate(0deg) translate(0, 0);
-  }
-  25% {
-    transform: rotate(24deg) translate(5px, 6px);
-  }
-  75% {
-    transform: rotate(-18deg) translate(-4px, -3px);
-  }
-  100% {
-    transform: rotate(0deg) translate(0, 0);
-  }
-}
-
 @media (max-width: 850px) {
   .contact-title-group {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-bottom: 24px;
-  }
-  .contact-arrow-wrap {
-    position: static;
-    margin-top: 8px;
-    width: 75px;
-    height: 75px;
-  }
-  .contact-arrow-svg {
-    width: 75px;
-    height: 75px;
   }
 }
 
